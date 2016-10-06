@@ -7,7 +7,6 @@ Vagrant.configure(2) do |config|
     master1.vm.provider "virtualbox" do |v|
       v.memory = 2048
     end
-    master1.vm.provision "file", source: "files/master", destination: "/tmp/"
     master1.vm.provision "shell", path: "scripts/pre-install-master.sh"
     master1.vm.provision "shell", path: "scripts/install-m1.sh"
   end
