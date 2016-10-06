@@ -27,13 +27,6 @@ Vagrant.configure(2) do |config|
     bbdd1.vm.hostname = "bbdd1.vagrant.test"
     bbdd1.vm.provision "shell", path: "scripts/install-psql.sh"
   end
-#######       BBDD2
-  config.vm.define "bbdd2" do |bbdd2|
-    bbdd2.vm.box = "bento/centos-7.2"
-    bbdd2.vm.hostname = "bbdd2.vagrant.test"
-    bbdd2.vm.provision "file", source: "files/bbdd", destination: "/tmp/"
-    bbdd2.vm.provision "shell", path: "scripts/install-psql.sh"
-  end
 #######       HAProxy
   config.vm.define "haproxy" do |haproxy|
     haproxy.vm.box = "bento/centos-7.2"
