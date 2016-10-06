@@ -1,0 +1,4 @@
+#exclude
+*.tar.gz
+*.rpm
+*.swp
