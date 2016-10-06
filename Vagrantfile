@@ -24,7 +24,7 @@ Vagrant.configure(2) do |config|
   end
 #######       BBDD1
   config.vm.define "bbdd1" do |bbdd1|
-    bbdd1.vm.box = "centos/7"
+    bbdd1.vm.box = "bento/centos-7.2"
     bbdd1.vm.hostname = "bbdd1.vagrant.test"
     bbdd1.vm.provision "file", source: "files/bbdd", destination: "/tmp/"
     bbdd1.vm.provision "shell", path: "scripts/install-psql.sh"
