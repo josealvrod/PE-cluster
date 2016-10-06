@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
     master1.vm.provider "virtualbox" do |v|
       v.memory = 2048
     end
-    master1.vm.provision "shell", path: "scripts/pre-install-master.sh"
+    master1.vm.provision "shell", inline: "tar xfz /vagrant/files/master/puppet-enterprise-2016.2.1-el-7-x86_64.tar.gz -C /tmp"
     master1.vm.provision "shell", path: "scripts/install-m1.sh"
   end
 #######       MASTER2
@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
       v.memory = 2048
     end
     #master2.vm.provision "file", source: "files/master", destination: "/tmp/"
-    #master2.vm.provision "shell", path: "scripts/pre-install-master.sh"
+    #master2.vm.provision "shell", inline: "tar xfz /vagrant/files/master/puppet-enterprise-2016.2.1-el-7-x86_64.tar.gz -C /tmp"
     master2.vm.provision "shell", path: "scripts/install-m2.sh"
   end
 #######       BBDD1
