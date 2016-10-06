@@ -13,11 +13,11 @@ puppet resource service pxp-agent ensure=stopped
 
 rm -rf /etc/puppetlabs/puppet/ssl/*
 
-rm -f /opt/puppetlabs/puppet/cache/client_data/catalog/master1.ola.vagrant.json
+rm -f /opt/puppetlabs/puppet/cache/client_data/catalog/puppet01.vagrant.test.json
 
 puppet cert list -a
 
-puppet cert generate master1.ola.vagrant --dns_alt_names=haproxy,master1,master2,haproxy.ola.vagrant,master1.ola.vagrant,master2.ola.vagrant
+puppet cert generate puppet01.vagrant.test --dns_alt_names=haproxy,puppet01,puppet02,haproxy.vagrant.test,puppet01.vagrant.test,puppet02.vagrant.test
 
 puppet cert generate pe-internal-classifier
 puppet cert generate pe-internal-dashboard
@@ -31,12 +31,12 @@ chown -R pe-puppet:pe-puppet /etc/puppetlabs/puppet/ssl
 
 rm -rf /etc/puppetlabs/puppetdb/ssl/*
 
-cp /etc/puppetlabs/puppet/ssl/certs/master1.ola.vagrant.pem /etc/puppetlabs/puppetdb/ssl/master1.ola.vagrant.cert.pem
-cp /etc/puppetlabs/puppet/ssl/public_keys/master1.ola.vagrant.pem /etc/puppetlabs/puppetdb/ssl/master1.ola.vagrant.public_key.pem
-cp /etc/puppetlabs/puppet/ssl/private_keys/master1.ola.vagrant.pem /etc/puppetlabs/puppetdb/ssl/master1.ola.vagrant.private_key.pem
+cp /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.cert.pem
+cp /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.public_key.pem
+cp /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.private_key.pem
 
 cd /etc/puppetlabs/puppetdb/ssl
-openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/puppetdb/ssl/master1.ola.vagrant.private_key.pem -out /etc/puppetlabs/puppetdb/ssl/master1.ola.vagrant.private_key.pk8 -nocrypt
+openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.private_key.pem -out /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.private_key.pk8 -nocrypt
 chown -R pe-puppetdb:pe-puppetdb /etc/puppetlabs/puppetdb/ssl
 
 rm -rf /etc/puppetlabs/orchestration-services/ssl/*
@@ -45,12 +45,12 @@ cp /etc/puppetlabs/puppet/ssl/certs/pe-internal-orchestrator.pem /etc/puppetlabs
 cp /etc/puppetlabs/puppet/ssl/public_keys/pe-internal-orchestrator.pem /etc/puppetlabs/orchestration-services/ssl/pe-internal-orchestrator.public_key.pem
 cp /etc/puppetlabs/puppet/ssl/private_keys/pe-internal-orchestrator.pem /etc/puppetlabs/orchestration-services/ssl/pe-internal-orchestrator.private_key.pem
 
-cp /etc/puppetlabs/puppet/ssl/certs/master1.ola.vagrant.pem /etc/puppetlabs/orchestration-services/ssl/master1.ola.vagrant.cert.pem
-cp /etc/puppetlabs/puppet/ssl/public_keys/master1.ola.vagrant.pem /etc/puppetlabs/orchestration-services/ssl/master1.ola.vagrant.public_key.pem
-cp /etc/puppetlabs/puppet/ssl/private_keys/master1.ola.vagrant.pem /etc/puppetlabs/orchestration-services/ssl/master1.ola.vagrant.private_key.pem
+cp /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.cert.pem
+cp /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.public_key.pem
+cp /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.private_key.pem
 
 cd /etc/puppetlabs/orchestration-services/ssl
-openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/orchestration-services/ssl/master1.ola.vagrant.private_key.pem -out /etc/puppetlabs/orchestration-services/ssl/master1.ola.vagrant.private_key.pk8 -nocrypt
+openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.private_key.pem -out /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.private_key.pk8 -nocrypt
 chown -R pe-orchestration-services:pe-orchestration-services /etc/puppetlabs/orchestration-services/ssl/
 
 rm -rf /opt/puppetlabs/server/data/console-services/certs/*
@@ -59,12 +59,12 @@ cp /etc/puppetlabs/puppet/ssl/certs/pe-internal-classifier.pem /opt/puppetlabs/s
 cp /etc/puppetlabs/puppet/ssl/public_keys/pe-internal-classifier.pem /opt/puppetlabs/server/data/console-services/certs/pe-internal-classifier.public_key.pem
 cp /etc/puppetlabs/puppet/ssl/private_keys/pe-internal-classifier.pem /opt/puppetlabs/server/data/console-services/certs/pe-internal-classifier.private_key.pem
 
-cp /etc/puppetlabs/puppet/ssl/certs/master1.ola.vagrant.pem /opt/puppetlabs/server/data/console-services/certs/master1.ola.vagrant.cert.pem
-cp /etc/puppetlabs/puppet/ssl/public_keys/master1.ola.vagrant.pem /opt/puppetlabs/server/data/console-services/certs/master1.ola.vagrant.public_key.pem
-cp /etc/puppetlabs/puppet/ssl/private_keys/master1.ola.vagrant.pem /opt/puppetlabs/server/data/console-services/certs/master1.ola.vagrant.private_key.pem
+cp /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.cert.pem
+cp /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.public_key.pem
+cp /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.private_key.pem
 
 cd /opt/puppetlabs/server/data/console-services/certs
-openssl pkcs8 -topk8 -inform PEM -outform DER -in /opt/puppetlabs/server/data/console-services/certs/master1.ola.vagrant.private_key.pem -out /opt/puppetlabs/server/data/console-services/certs/master1.ola.vagrant.private_key.pk8 -nocrypt
+openssl pkcs8 -topk8 -inform PEM -outform DER -in /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.private_key.pem -out /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.private_key.pk8 -nocrypt
 chown -R pe-console-services:pe-console-services /opt/puppetlabs/server/data/console-services/certs/
 
 cp /etc/puppetlabs/puppet/ssl/certs/pe-internal-dashboard.pem /opt/puppetlabs/server/data/console-services/certs/pe-internal-dashboard.cert.pem

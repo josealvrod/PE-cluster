@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/bin/bash -xe
 
-set -e
-set -x
-
-sudo /tmp/master1/puppet-enterprise-2016.2.0-el-7-x86_64/puppet-enterprise-installer -c /tmp/master1/pe.conf
+sudo /tmp/master/puppet-enterprise-2016.2.1-el-7-x86_64/puppet-enterprise-installer -c /tmp/master/pe1.conf
+sudo /opt/puppetlabs/puppet/bin/puppet agent -t
+#sudo /vagrant/files/saved_certs.sh
 #sudo /opt/puppetlabs/puppet/bin/puppet agent -t
-sudo echo "node1.ola.vagrant" >> /etc/puppetlabs/puppet/autosign.conf
+#sudo echo "node1.ola.vagrant" >> /etc/puppetlabs/puppet/autosign.conf
