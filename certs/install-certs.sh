@@ -45,9 +45,9 @@ puppet resource service pxp-agent ensure=stopped
   cp -p ca_crl.pem /etc/puppetlabs/puppet/ssl/ca/
 
   # Puppet master new certs
-  cp -p ${FQDN}.cert.pem /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem
-  cp -p ${FQDN}.private_key.pem /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem
-  cp -p ${FQDN}.public_key.pem /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem
+  cp -p puppetmaster.cert.pem /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem
+  cp -p puppetmaster.private_key.pem /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem
+  cp -p puppetmaster.public_key.pem /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem
 
   # Create the certificates for PE-related services
   cp -p pe-internal-dashboard.cert.pem /etc/puppetlabs/puppet/ssl/certs/pe-internal-dashboard.pem
