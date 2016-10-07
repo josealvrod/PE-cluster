@@ -3,6 +3,19 @@
 set -e
 set -x
 
+PATH=$PATH:/opt/puppetlabs/puppet/bin/
+FQDN=$(facter fqdn)
+
+gem install puppetclassify
+./unpin-ca.rb ${FQDN}
+
+cat > /etc/puppetlabs/code/environments/production/hieradata/common.yaml << HIERA
+---
+puppet_enterprise::profile::master::enable_ca_proxy : false
+HIERA
+
+puppet agent --test || true
+
 # Shut down all PE-related services
 puppet resource service puppet ensure=stopped
 puppet resource service pe-puppetserver ensure=stopped
@@ -20,7 +33,7 @@ puppet resource service pxp-agent ensure=stopped
   rm -rf /etc/puppetlabs/puppet/ssl/*
 
   # Remove the cached catalog
-  rm -f /opt/puppetlabs/puppet/cache/client_data/catalog/puppet01.vagrant.test.json
+  rm -f /opt/puppetlabs/puppet/cache/client_data/catalog/${FQDN}.json
 
   # Regenerate the CA
   mkdir -p /etc/puppetlabs/puppet/ssl/certs/
@@ -32,9 +45,9 @@ puppet resource service pxp-agent ensure=stopped
   cp -p ca_crl.pem /etc/puppetlabs/puppet/ssl/ca/
 
   # Puppet master new certs
-  cp -p puppet01.vagrant.test.cert.pem /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem
-  cp -p puppet01.vagrant.test.private_key.pem /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem
-  cp -p puppet01.vagrant.test.public_key.pem /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem
+  cp -p ${FQDN}.cert.pem /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem
+  cp -p ${FQDN}.private_key.pem /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem
+  cp -p ${FQDN}.public_key.pem /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem
 
   # Create the certificates for PE-related services
   cp -p pe-internal-dashboard.cert.pem /etc/puppetlabs/puppet/ssl/certs/pe-internal-dashboard.pem
@@ -66,13 +79,13 @@ puppet resource service pxp-agent ensure=stopped
   rm -rf /etc/puppetlabs/puppetdb/ssl/*
 
   # Copy the certs and security credentials to the PuppetDB SSL directory
-  cp -p /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.cert.pem
-  cp -p /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.public_key.pem
-  cp -p /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.private_key.pem
+  cp -p /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem /etc/puppetlabs/puppetdb/ssl/${FQDN}.cert.pem
+  cp -p /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem /etc/puppetlabs/puppetdb/ssl/${FQDN}.public_key.pem
+  cp -p /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem /etc/puppetlabs/puppetdb/ssl/${FQDN}.private_key.pem
 
   # Create PuppetDB’s .pk8 cert
   cd /etc/puppetlabs/puppetdb/ssl
-  openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.private_key.pem -out /etc/puppetlabs/puppetdb/ssl/puppet01.vagrant.test.private_key.pk8 -nocrypt
+  openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/puppetdb/ssl/${FQDN}.private_key.pem -out /etc/puppetlabs/puppetdb/ssl/${FQDN}.private_key.pk8 -nocrypt
   chown -R pe-puppetdb:pe-puppetdb /etc/puppetlabs/puppetdb/ssl
 
 # CLEAR AND REGENERATE CERTS FOR ORCHESTRATION-SERVICES
@@ -85,13 +98,13 @@ puppet resource service pxp-agent ensure=stopped
   cp -p /etc/puppetlabs/puppet/ssl/private_keys/pe-internal-orchestrator.pem /etc/puppetlabs/orchestration-services/ssl/pe-internal-orchestrator.private_key.pem
 
   # Copy the PE agent cert and security credentials to the orchestration-services cert directory
-  cp -p /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.cert.pem
-  cp -p /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.public_key.pem
-  cp -p /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.private_key.pem
+  cp -p /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem /etc/puppetlabs/orchestration-services/ssl/${FQDN}.cert.pem
+  cp -p /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem /etc/puppetlabs/orchestration-services/ssl/${FQDN}.public_key.pem
+  cp -p /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem /etc/puppetlabs/orchestration-services/ssl/${FQDN}.private_key.pem
 
   # Create the orchestration-services .pk8 cert
   cd /etc/puppetlabs/orchestration-services/ssl
-  openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.private_key.pem -out /etc/puppetlabs/orchestration-services/ssl/puppet01.vagrant.test.private_key.pk8 -nocrypt
+  openssl pkcs8 -topk8 -inform PEM -outform DER -in /etc/puppetlabs/orchestration-services/ssl/${FQDN}.private_key.pem -out /etc/puppetlabs/orchestration-services/ssl/${FQDN}.private_key.pk8 -nocrypt
   chown -R pe-orchestration-services:pe-orchestration-services /etc/puppetlabs/orchestration-services/ssl/
 
 # CLEAR AND REGENERATE CERTS FOR THE PE-CONSOLE
@@ -104,13 +117,13 @@ puppet resource service pxp-agent ensure=stopped
   cp -p /etc/puppetlabs/puppet/ssl/private_keys/pe-internal-classifier.pem /opt/puppetlabs/server/data/console-services/certs/pe-internal-classifier.private_key.pem
 
   # Copy the PE agent cert and security credentials to the console-services cert directory
-  cp -p /etc/puppetlabs/puppet/ssl/certs/puppet01.vagrant.test.pem /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.cert.pem
-  cp -p /etc/puppetlabs/puppet/ssl/public_keys/puppet01.vagrant.test.pem /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.public_key.pem
-  cp -p /etc/puppetlabs/puppet/ssl/private_keys/puppet01.vagrant.test.pem /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.private_key.pem
+  cp -p /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem /opt/puppetlabs/server/data/console-services/certs/${FQDN}.cert.pem
+  cp -p /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem /opt/puppetlabs/server/data/console-services/certs/${FQDN}.public_key.pem
+  cp -p /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem /opt/puppetlabs/server/data/console-services/certs/${FQDN}.private_key.pem
 
   # Create the console-services .pk8 cert
   cd /opt/puppetlabs/server/data/console-services/certs
-  openssl pkcs8 -topk8 -inform PEM -outform DER -in /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.private_key.pem -out /opt/puppetlabs/server/data/console-services/certs/puppet01.vagrant.test.private_key.pk8 -nocrypt
+  openssl pkcs8 -topk8 -inform PEM -outform DER -in /opt/puppetlabs/server/data/console-services/certs/${FQDN}.private_key.pem -out /opt/puppetlabs/server/data/console-services/certs/${FQDN}.private_key.pk8 -nocrypt
   chown -R pe-console-services:pe-console-services /opt/puppetlabs/server/data/console-services/certs/
 
   # Copy the pe-internal-dashboard cert and security credentials to the console-services cert directory
