@@ -7,8 +7,15 @@ Vagrant.configure(2) do |config|
     master1.vm.provider "virtualbox" do |v|
       v.memory = 2048
     end
-    master1.vm.provision "shell", inline: "tar xfz /vagrant/files/master/puppet-enterprise-2016.2.1-el-7-x86_64.tar.gz -C /tmp"
-    master1.vm.provision "shell", path: "scripts/install-m1.sh"
+    master1.vm.provision "shell", inline: <<-SHELL
+      /vagrant/scripts/preinstall-certs.sh
+      /vagrant/scripts/install-pe.sh
+      /vagrant/scripts/hiera.sh
+      /vagrant/scripts/no-ca.sh
+      /vagrant/scripts/no-mco.sh
+      /vagrant/scripts/clean-infra.sh
+      /vagrant/scripts/run-agent.sh
+    SHELL
   end
 #######       MASTER2
   config.vm.define "master2" do |master2|
@@ -17,9 +24,16 @@ Vagrant.configure(2) do |config|
     master2.vm.provider "virtualbox" do |v|
       v.memory = 2048
     end
-    #master2.vm.provision "file", source: "files/master", destination: "/tmp/"
-    #master2.vm.provision "shell", inline: "tar xfz /vagrant/files/master/puppet-enterprise-2016.2.1-el-7-x86_64.tar.gz -C /tmp"
-    master2.vm.provision "shell", path: "scripts/install-m2.sh"
+    master2.vm.provision "shell", inline: <<-SHELL
+      /vagrant/scripts/preinstall-certs.sh
+      /vagrant/scripts/install-pe.sh
+      /vagrant/scripts/hiera.sh
+      /vagrant/scripts/no-ca.sh
+      /vagrant/scripts/no-mco.sh
+      /vagrant/scripts/no-orchestrator.sh
+      /vagrant/scripts/clean-infra.sh
+      /vagrant/scripts/run-agent.sh
+    SHELL
   end
 #######       BBDD1
   config.vm.define "bbdd1" do |bbdd1|
@@ -31,12 +45,11 @@ Vagrant.configure(2) do |config|
   config.vm.define "haproxy" do |haproxy|
     haproxy.vm.box = "bento/centos-7.2"
     haproxy.vm.hostname = "haproxy.vagrant.test"
+    haproxy.vm.provider "virtualbox" do |v|
+      v.memory = 256
+    end
     haproxy.vm.provision "shell", inline: <<-SHELL
-      sudo rpm -ivh /vagrant/files/bbdd/puppet-agent-1.5.3-1.el7.x86_64.rpm
-      sudo /opt/puppetlabs/bin/puppet module install puppetlabs-haproxy
-      #sudo yum -y install haproxy
-      #sudo mv /vagrant/files/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg
-      #sudo haproxy -f /etc/haproxy/haproxy.cfg
+      yum -y install haproxy
     SHELL
   end
 ########      NODE1

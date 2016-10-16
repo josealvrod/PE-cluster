@@ -13,8 +13,9 @@ auth_info = {
 classifier_url = "https://#{fqdn}:4433/classifier-api"
 puppetclassify = PuppetClassify.new(classifier_url, auth_info)
 
-my_group_id = puppetclassify.groups.get_group_id("PE Certificate Authority")
+infra_group_id = puppetclassify.groups.get_group_id("PE Infrastructure")
 
-nodes = ["#{fqdn}"]
+infra_group =  puppetclassify.groups.get_group(infra_group_id)
+infra_group['classes']['puppet_enterprise'].delete_if { |k,v| ["puppetdb_host", "puppet_master_host", "pcp_broker_host", "console_host"].include?(k) }
 
-puppetclassify.groups.unpin_nodes(my_group_id, nodes)
+puppetclassify.groups.create_group(infra_group)
