@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
       /vagrant/scripts/no-ca.sh
       /vagrant/scripts/no-mco.sh
       /vagrant/scripts/clean-infra.sh
-      sed -i -e "s/\$client_certname = \$puppet_enterprise::puppet_master_host/\$client_certname = \$::clientcert/g" /opt/puppetlabs/puppet/modules/puppet_enterprise/manifests/profile/orchestrator.pp
+      /vagrant/scripts/orchestrator-cert.sh
       #/vagrant/scripts/run-agent.sh
     SHELL
   end
