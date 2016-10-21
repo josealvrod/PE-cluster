@@ -9,4 +9,5 @@ puppet_enterprise::puppetdb_host : "haproxy.vagrant.test"
 puppet_enterprise::puppet_master_host : "haproxy.vagrant.test"
 puppet_enterprise::pcp_broker_host : "haproxy.vagrant.test"
 puppet_enterprise::profile::puppetdb::whitelisted_certnames : ["haproxy.vagrant.test","puppet01.vagrant.test","puppet02.vagrant.test"]
+puppet_enterprise::trapperkeeper::orchestrator::client_certname : "puppet01.vagrant.test"
 HIERA
