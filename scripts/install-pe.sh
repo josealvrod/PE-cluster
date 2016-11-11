@@ -4,5 +4,5 @@ set -e
 set -x
 set -u
 
-tar xfz /vagrant/files/puppet-enterprise-2016.2.1-el-7-x86_64.tar.gz -C /tmp
-/tmp/puppet-enterprise-2016.2.1-el-7-x86_64/puppet-enterprise-installer -c /vagrant/files/${HOSTNAME}.conf
+tar xfz /vagrant/files/puppet-enterprise-2016.4.2-el-7-x86_64.tar.gz -C /tmp
+/tmp/puppet-enterprise-2016.4.2-el-7-x86_64/puppet-enterprise-installer -c /vagrant/files/${HOSTNAME}.conf
