@@ -1,6 +1,4 @@
 Vagrant.configure(2) do |config|
-  config.landrush.enabled = true
-  config.landrush.host_redirect_dns = false
   config.vm.define "master1" do |master1|
     master1.vm.box = "bento/centos-7.2"
     master1.vm.hostname = "puppet01.vagrant.test"
@@ -30,7 +28,7 @@ Vagrant.configure(2) do |config|
       /vagrant/scripts/hiera.sh
       /vagrant/scripts/no-ca.sh
       /vagrant/scripts/no-mco.sh
-      /vagrant/scripts/no-orchestrator.sh
+#      /vagrant/scripts/no-orchestrator.sh
       /vagrant/scripts/clean-infra.sh
       /vagrant/scripts/run-agent.sh
     SHELL

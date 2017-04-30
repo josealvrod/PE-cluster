@@ -1,15 +1,5 @@
 #!/bin/bash
 
-#TODO
-# mirar de poner lo del ca_proxy por classifier
-# desactivar orchestration services en puppet02 por error en agent con rbac whitelist (bug)
-# activar codemanager y r10k
-# pruebas con filesync
-# montar vault y pruebas nodo
-# probar el classify todo de una vez de nuevo
-# balanceo nginx bien, mantenga sesion
-
-
 set -e
 set -x
 
@@ -30,6 +20,12 @@ CERTS_DIR='/vagrant/certs'
   cp -p ${CERTS_DIR}/${FQDN}.cert.pem /etc/puppetlabs/puppet/ssl/certs/${FQDN}.pem
   cp -p ${CERTS_DIR}/${FQDN}.private_key.pem /etc/puppetlabs/puppet/ssl/private_keys/${FQDN}.pem
   cp -p ${CERTS_DIR}/${FQDN}.public_key.pem /etc/puppetlabs/puppet/ssl/public_keys/${FQDN}.pem
+
+  # Puppet master new certs
+  cp -p ${CERTS_DIR}/${FQDN}.cert.pem /etc/puppetlabs/puppet/ssl/certs/haproxy.vagrant.test.pem
+  cp -p ${CERTS_DIR}/${FQDN}.private_key.pem /etc/puppetlabs/puppet/ssl/private_keys/haproxy.vagrant.test.pem
+  cp -p ${CERTS_DIR}/${FQDN}.public_key.pem /etc/puppetlabs/puppet/ssl/public_keys/haproxy.vagrant.test.pem
+
 
   # Fake mco certs
   touch /etc/puppetlabs/puppet/ssl/private_keys/pe-internal-mcollective-servers.pem
